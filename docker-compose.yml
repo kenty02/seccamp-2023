@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres:15.3
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: seccamp
+    volumes:
+      - ./misc/sql:/docker-entrypoint-initdb.d
