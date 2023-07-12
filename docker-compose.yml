@@ -9,7 +9,7 @@ services:
     volumes:
       - ./misc/sql:/docker-entrypoint-initdb.d
   app:
-    build: .
+    image: kenty02/seccamp2023-b3-app:latest
     ports:
       - "8080:8080"
     depends_on:
