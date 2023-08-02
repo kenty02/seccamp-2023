@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: b3-app
+  labels:
+    app: b3-app
+spec:
+  selector:
+    matchLabels:
+      app: b3-app
+  template:
+    metadata:
+      labels:
+        app: b3-app
+    spec:
+      containers:
+      - name: b3-app
+        image: kenty02/seccamp2023-b3-app:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DATABASE_DSN
+          valueFrom: 
+            secretKeyRef:
+              name: b3-app
+              key: DATABASE_DSN

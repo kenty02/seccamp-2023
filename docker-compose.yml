@@ -8,11 +8,17 @@ services:
       POSTGRES_DB: seccamp
     volumes:
       - ./misc/sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   app:
     image: kenty02/seccamp2023-b3-app:latest
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       DATABASE_DSN: postgres://postgres:password@postgres:5432/seccamp

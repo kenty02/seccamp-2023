@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: b3-postgres
+spec:
+  selector:
+    matchLabels:
+      app: b3-postgres
+  template:
+    metadata:
+      labels:
+        app: b3-postgres
+    spec:
+      containers:
+      - name: b3-postgres
+        image: postgres:15.3
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        - name: POSTGRES_DB
+          value: seccamp
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - postgres
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: initdb
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: initdb
+        secret:
+          secretName: postgres-secret
+          items:
+          - key: init.sh
+            path: init.sh
